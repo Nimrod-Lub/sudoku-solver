@@ -1,5 +1,5 @@
-﻿using Sudoku_Solver.sudoku_solver;
-using System;
+﻿using System;
+
 class Program
 {
     public static void Main(String[] args)
@@ -11,6 +11,9 @@ class Program
         string input = inputHandler.GetInput();
         InputValidityChecker inputValidityChecker = new InputValidityChecker();
         inputValidityChecker.CheckValidity(input);
+
+        int[,] sudokuBoard = BoardBuilder.BuildBoard(input);
+        int[,] result = SudokuSolver.Solve(sudokuBoard, 0, 0);
         
     }
 }

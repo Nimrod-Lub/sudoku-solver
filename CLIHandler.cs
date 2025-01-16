@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sudoku_Solver.sudoku_solver
+public class CLIHandler : IInputHandler
 {
-    public class CLIHandler : IInputHandler
+    public string GetInput()
     {
-        public string GetInput()
-        {
-            return Console.ReadLine();
-        }
+        return Console.ReadLine();
     }
 }
