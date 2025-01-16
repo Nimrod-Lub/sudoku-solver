@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Sudoku_Solver
 {
-    public interface IInputHandler
+    public interface IOutputHandler
     {
-        public abstract string GetInput();
+        public abstract void Output(string str);
+
+        public abstract void OutputBoard(int[,] board);
     }
 }

@@ -1,20 +1,29 @@
 ﻿using System;
+using System.Drawing;
 
-class Program
+namespace Sudoku_Solver
 {
-    public static void Main(String[] args)
+    public class Program
     {
-        
-        Console.WriteLine("Enter sudoku board:");
-        IInputHandler inputHandler = new CLIHandler();
+        public static void Main(String[] args)
+        {
 
-        string input = inputHandler.GetInput();
-        InputValidityChecker inputValidityChecker = new InputValidityChecker();
-        inputValidityChecker.CheckValidity(input);
+            Console.WriteLine("Enter sudoku board:");
+            CLIHandler cliHandler = new CLIHandler();
+            IInputHandler inputHandler = cliHandler;
+            IOutputHandler outputHandler = cliHandler;
 
-        int[,] sudokuBoard = BoardBuilder.BuildBoard(input);
-        int[,] result = SudokuSolver.Solve(sudokuBoard, 0, 0);
-        
+            string input = inputHandler.GetInput();
+            InputValidityChecker.CheckValidity(input);
+
+            int[,] sudokuBoard = BoardBuilder.BuildBoard(input);
+            outputHandler.OutputBoard(sudokuBoard);
+
+            int[,] result = SudokuSolver.Solve(sudokuBoard, 0, 0);
+            outputHandler.OutputBoard(result);
+
+        }
     }
 }
+
 
