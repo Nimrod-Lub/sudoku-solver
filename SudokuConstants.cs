@@ -9,5 +9,6 @@ namespace Sudoku_Solver
     public class SudokuConstants
     {
         public static int blockLength;
+        public static int boardLength;
     }
 }

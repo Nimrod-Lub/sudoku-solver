@@ -20,7 +20,7 @@ namespace Sudoku_Solver
        
         public void OutputBoard(int[,] board)
         {
-            if (board == null)
+            if (board == null) //TODO test if this is needed
             {
                 Console.WriteLine("No solution found");
                 return;
@@ -30,12 +30,14 @@ namespace Sudoku_Solver
             {
                 // Prints the upper edge of the board
                 // Every number has a space, every block seperator except the first one has a space, and the first seperator
-                Console.WriteLine(new string('-', board.GetLength(0) * 2 + SudokuConstants.blockLength * 2 + 1));
+                // Therefore, the board length will be 2 * boardLength + 2 * blockNum (or blockLength) + 1
+                if (i % SudokuConstants.blockLength == 0)
+                    Console.WriteLine(new string('-', board.GetLength(0) * 2 + SudokuConstants.blockLength * 2 + 1));
                 string row = "| ";
                 for (int j = 0; j < board.GetLength(0); j++) // Iterates over one row
                 {
 
-                    row += (board[i, j] - '0') + " ";
+                    row += (board[i, j]) + " ";
                     if ((j + 1) % SudokuConstants.blockLength == 0)
                     row += "| ";
                 }

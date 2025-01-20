@@ -6,16 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Sudoku_Solver
+namespace Sudoku_Solver //TODO maybe use arr of booleans rather than arr of ints for extra speed?
 {
     public class SudokuSolver
     {
         // General note - since the board is a square - the amount of rows and cols are the same,
         // so board.GetLength(0) and board.GetLength(1) are the same thing
-        public static int[,] Solve(int[,] board, int row, int col)
+        public static bool SolveSudokuBacktracking(int[,] board, int row, int col)
         {
             if (row == board.GetLength(0) - 1 && col == board.GetLength(0)) // every tile has been checked
-                return board;
+                return true;
 
             if (col == board.GetLength(0))
             {
@@ -25,23 +25,32 @@ namespace Sudoku_Solver
 
             if (board[row, col] != 0)
             {
-                return Solve(board, row, col + 1);
+                return SolveSudokuBacktracking(board, row, col + 1);
             }
 
-            for (int num = 1; num < board.GetLength(0); num++)
+            for (int num = 1; num <= board.GetLength(0); num++)
             {
                 if (IsValid(board, row, col, num))
                 {
                     board[row, col] = num;
 
-                    int[,] temp = Solve(board, row, col + 1);
-                    if (temp != null)
+                    bool solvedWithCurrNum = SolveSudokuBacktracking(board, row, col + 1);
+                    if (solvedWithCurrNum == true)
                     {
-                        return temp;
+                        return true;
                     }
+                    board[row, col] = 0;
                 }
             }
-            return null;
+            return false;
+        }
+
+        public static bool Solve(int[,] board, int row, int col)
+        {
+            if (!IsSolvable(board))
+                return false;
+
+            return SolveSudokuBacktracking(board, row, col);
         }
 
         private static bool IsValid(int[,] board, int row, int col, int num)
@@ -66,5 +75,99 @@ namespace Sudoku_Solver
 
             return true;
         }
+
+        public static bool IsSolvable(int[,] sudokuBoard)
+        {
+
+            if (HasDuplicatesInRow(sudokuBoard)
+                || HasDuplicatesInColumn(sudokuBoard)
+                || HasDuplicatesInBlock(sudokuBoard))
+                return false;
+            return true;
+        }
+
+        public static bool HasDuplicatesInRow(int[,] sudokuBoard)
+        {
+            int boardLength = SudokuConstants.boardLength;
+            int[] counterArr = new int[boardLength];
+
+            for (int i = 0; i < boardLength; i++)
+            {
+                for (int j = 0; j < boardLength; j++)
+                {
+                    int currNum = sudokuBoard[i, j];
+                    if (currNum != 0)
+                        counterArr[currNum - 1]++;
+                }
+                
+                if (HasDuplicates(counterArr))
+                {
+                    return true;
+                }
+                Array.Clear(counterArr, 0, counterArr.Length);
+            }
+            return false;
+        }
+
+        public static bool HasDuplicatesInColumn(int[,] sudokuBoard)
+        {
+            int boardLength = SudokuConstants.boardLength;
+            int[] counterArr = new int[boardLength];
+
+            for (int i = 0; i < boardLength; i++)
+            {
+                for (int j = 0; j < boardLength; j++)
+                {
+                    int currNum = sudokuBoard[j, i];
+                    if (currNum != 0)
+                        counterArr[currNum - 1]++;
+                }
+
+                if (HasDuplicates(counterArr))
+                {
+                    return true;
+                }
+                Array.Clear(counterArr, 0, counterArr.Length);
+            }
+            return false;
+        }
+
+        public static bool HasDuplicatesInBlock(int[,] sudokuBoard)
+        {
+            int boardLength = SudokuConstants.boardLength;
+            int blockLength = SudokuConstants.blockLength;
+            int[] counterArr = new int[boardLength];
+
+            // Assuming block length = num of blocks in each row/column
+            for (int blockRow = 0; blockRow < blockLength; blockRow++)
+            {
+                for (int blockCol = 0; blockCol < blockLength; blockCol++)
+                {
+                    for (int i = 0;i < blockLength; i++)
+                    {
+                        for (int j = 0; j < blockLength ; j++)
+                        {
+                            int currRow = blockRow * blockLength + i;
+                            int currCol = blockCol * blockLength + j;
+                            int currNum = sudokuBoard[currRow, currCol];
+                            if (currNum != 0)
+                                counterArr[currNum - 1]++;
+                        }
+                    }
+                    
+                    if (HasDuplicates(counterArr))
+                    {
+                        return true;
+                    }
+                    Array.Clear(counterArr, 0, counterArr.Length);
+
+                }
+              
+            }
+            return false;
+        }
+
+        // Linq that checks if there's a number who appeared more than once in the current row/column/block
+        public static bool HasDuplicates(int[] counterArr) { return !counterArr.All(number => number <= 1); }
     }
 }
