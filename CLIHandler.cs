@@ -36,8 +36,8 @@ namespace Sudoku_Solver
                 string row = "| ";
                 for (int j = 0; j < board.GetLength(0); j++) // Iterates over one row
                 {
-
-                    row += (board[i, j]) + " ";
+                    // converts from int to ascii value and displays as char e.g. converts 1 to 49/'1'
+                    row += ((char)(board[i, j] + '0')) + " ";
                     if ((j + 1) % SudokuConstants.blockLength == 0)
                     row += "| ";
                 }

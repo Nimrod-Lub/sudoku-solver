@@ -27,12 +27,22 @@ namespace Sudoku_Solver
                 Environment.Exit(1); 
             }
 
+            int max = 0;
+
             foreach (char c in input)
             {
-                if (!char.IsDigit(c))
+                int curr = c - '0';
+                if (curr < 0)
                 {
                     Environment.Exit(1); // will throw an exception
                 }
+                if (curr > max)
+                    max = curr;
+            }
+
+            if (max > boardLength)
+            {
+                Environment.Exit(1); // will throw an exception
             }
 
             SudokuConstants.boardLength = (int)boardLength;

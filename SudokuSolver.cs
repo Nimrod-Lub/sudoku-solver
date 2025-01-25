@@ -10,14 +10,13 @@ namespace Sudoku_Solver //TODO maybe use arr of booleans rather than arr of ints
 {
     public class SudokuSolver
     {
-        // General note - since the board is a square - the amount of rows and cols are the same,
-        // so board.GetLength(0) and board.GetLength(1) are the same thing
         public static bool SolveSudokuBacktracking(int[,] board, int row, int col)
         {
-            if (row == board.GetLength(0) - 1 && col == board.GetLength(0)) // every tile has been checked
+            int boardLength = SudokuConstants.boardLength;
+            if (row == boardLength - 1 && col == boardLength) // every tile has been checked
                 return true;
 
-            if (col == board.GetLength(0))
+            if (col == boardLength)
             {
                 row++;
                 col = 0;
@@ -28,7 +27,7 @@ namespace Sudoku_Solver //TODO maybe use arr of booleans rather than arr of ints
                 return SolveSudokuBacktracking(board, row, col + 1);
             }
 
-            for (int num = 1; num <= board.GetLength(0); num++)
+            for (int num = 1; num <= boardLength; num++)
             {
                 if (IsValid(board, row, col, num))
                 {
