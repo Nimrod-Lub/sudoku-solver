@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sudoku_Solver
 {
-    public class SudokuHeuristicsSolver
+    public class SudokuHeuristicsSolver //TODO fix solver
     {
         public static Cell[,] Solve(Board board)
         {
