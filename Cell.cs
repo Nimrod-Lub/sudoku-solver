@@ -34,7 +34,8 @@ namespace Sudoku_Solver
         public void SetValue(byte value)
         {
             this.value = value;
-            possibilites.Clear();
+            if (value != 0)
+                possibilites.Clear();
         }
         public void RemovePossibility(byte value)
         {

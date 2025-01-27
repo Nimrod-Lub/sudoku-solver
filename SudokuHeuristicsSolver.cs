@@ -8,7 +8,7 @@ namespace Sudoku_Solver
 {
     public class SudokuHeuristicsSolver
     {
-        public static Board Solve(Board board)
+        public static Cell[,] Solve(Board board)
         {
             Cell[,] sudokuBoard = board.GetBoard();
             if (!SudokuSolverUtils.IsSolvable(sudokuBoard))
@@ -22,23 +22,26 @@ namespace Sudoku_Solver
             bool updated = true;
             while (updated)
             {
-                updated = SudokuSolverUtils.FindHiddenSingles(board);
+                updated = SudokuSolverUtils.FindNakedSingles(board) && SudokuSolverUtils.FindObviousTuples(board);
             }
 
 
-            Tuple<int, int> indexes = SudokuSolverUtils.FindMinPossibilityCell(board);
+
+            (int, int) indexes = SudokuSolverUtils.FindMinPossibilityCell(board);
 
             int row = indexes.Item1;
             int col = indexes.Item2;
-            Cell minPosibilitiesCell = board[row, col];
 
             if (row == -1) // all cells have a value
                 return board;
 
+            Cell minPosibilitiesCell = board[row, col];
+            
 
             foreach (byte b in minPosibilitiesCell.GetPossibilities())
             {
                 minPosibilitiesCell.SetValue(b);
+                SudokuSolverUtils.RemovePossibilities(board, b, row, col);
                 Cell[,] result = SolveSudokuHeuristics(SudokuSolverUtils.CopyBoard(board));
 
                 if (result != null)

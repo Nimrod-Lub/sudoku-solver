@@ -37,19 +37,20 @@ namespace Sudoku_Solver
                     byte currValue = board[i, j].GetValue();
                     if (currValue != 0)
                     {
-                        InitialRemovePossibilities(currValue, i, j);
+                        RemovePossibilities(currValue, i, j);
                     }
                 }
             }
         }
 
-        private void InitialRemovePossibilities(byte num, int row, int col)
+        private void RemovePossibilities(byte num, int row, int col)
         {
+            int boardLength = SudokuConstants.boardLength;
             int blockLength = SudokuConstants.blockLength;
             int blockStartRow = row - row % blockLength;
             int blockStartCol = col - col % blockLength;
 
-            for (int i = 0; i < SudokuConstants.boardLength; i++)
+            for (int i = 0; i < boardLength; i++)
             {
                 board[i, col].RemovePossibility(num);
                 board[row, i].RemovePossibility(num);

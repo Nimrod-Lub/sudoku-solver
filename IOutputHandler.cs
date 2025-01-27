@@ -10,6 +10,6 @@ namespace Sudoku_Solver
     {
         public abstract void Output(string str);
 
-        public abstract void OutputBoard(int[,] board);
+        public abstract void OutputBoard(Cell[,] board);
     }
 }

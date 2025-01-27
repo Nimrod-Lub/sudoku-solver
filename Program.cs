@@ -23,26 +23,28 @@ namespace Sudoku_Solver
 
                 InputValidityChecker.CheckValidity(input);
 
-                int[,] sudokuBoard = BoardBuilder.BuildBoard(input);
+                //int[,] sudokuBoard = BoardBuilder.BuildBoard(input);
+                Board board = new Board(input);
                 outputHandler.Output("The inputted board is:\n\n");
-                outputHandler.OutputBoard(sudokuBoard);
+                outputHandler.OutputBoard(board.GetBoard());
 
 
                 Stopwatch solveTimer = new Stopwatch();
                 solveTimer.Start();
-                bool result = SudokuSolver.Solve(sudokuBoard, 0, 0);
+                //bool result = SudokuBacktrackingSolver.Solve(sudokuBoard, 0, 0);
+                Cell[,] result = SudokuHeuristicsSolver.Solve(board);
                 solveTimer.Stop();
                 long solveLenMillis = solveTimer.ElapsedMilliseconds;
                 outputHandler.Output(String.Format("Time taken to solve: {0} milliseconds", solveLenMillis));
 
-                if (result == false)
+                if (result == null)
                 {
                     outputHandler.Output("\n\nThe board you provided is not solvable");
                 }
                 else
                 {
                     outputHandler.Output("\n\nThe solution of the board is:\n\n");
-                    outputHandler.OutputBoard(sudokuBoard);
+                    outputHandler.OutputBoard(result);
                 }
             }
         }
