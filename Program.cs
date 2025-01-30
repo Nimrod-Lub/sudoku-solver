@@ -34,6 +34,10 @@ namespace Sudoku_Solver
                 //bool result = SudokuBacktrackingSolver.Solve(sudokuBoard, 0, 0);
                 Cell[,] result = SudokuHeuristicsSolver.Solve(board);
                 solveTimer.Stop();
+
+                Console.WriteLine($"Choose took {SudokuConstants.chooseTime} milliseconds");
+                Console.WriteLine($"Entered obvious tuple {SudokuConstants.inObviousTuple} times");
+
                 long solveLenMillis = solveTimer.ElapsedMilliseconds;
                 outputHandler.Output(String.Format("Time taken to solve: {0} milliseconds", solveLenMillis));
 

@@ -8,6 +8,7 @@ namespace Sudoku_Solver
 {
     public static class SudokuSolverUtils
     {
+        private static readonly int MAXIMUM_GROUP_LENGTH = 2;
         public static bool IsSolvable(Cell[,] sudokuBoard)
         {
 
@@ -126,8 +127,9 @@ namespace Sudoku_Solver
                 {
                     Cell currCell = board[i, j];
                     HashSet<byte> possibilities = currCell.GetPossibilities();
-                    if (possibilities.Count == 1)
+                    if (possibilities.Count == 1 && currCell.GetValue() == 0)
                     {
+                        //Console.WriteLine("Entered");
                         byte onlyNum = possibilities.ElementAt(0);
                         currCell.SetValue(onlyNum);
                         RemovePossibilities(board, onlyNum, i, j);
@@ -181,6 +183,7 @@ namespace Sudoku_Solver
                     }
 
                     Cell currCellCol = board[col, row];
+                    if (currCellCol.GetValue() == 0)
                     {
                         currentCheckedGroupCols.Add((col, row));
                     }
@@ -222,14 +225,24 @@ namespace Sudoku_Solver
         public static bool FindObviousTuplesGroup(Cell[,] board, List<(int, int)> group)
         {
             bool changed = false;
-            //int groupSize = (int) Math.Floor(Math.Sqrt(group.Count));
-            int groupSize = group.Count;
-            for (int combinationSize = 2; combinationSize < groupSize; combinationSize++)
+
+            for (int combinationSize = 2; combinationSize <= MAXIMUM_GROUP_LENGTH; combinationSize++)
             {
+               // SudokuConstants.inObviousTuple++;
                 // get all combinations with size combinationSize in the group, starting from index 0
-                List<List<(int, int)>> combinationsList = NChooseK(group, combinationSize, 0);
-                foreach (List<(int, int)> combination in combinationsList)
+
+                System.Diagnostics.Stopwatch stopwatch = new();
+                stopwatch.Start();
+                //List<List<(int, int)>> combinationsList = NChooseK(group, combinationSize, 0);
+                List<List<(int, int)>> combinationsList = new();
+                NChooseK(combinationsList, group, combinationSize, 0);
+                stopwatch.Stop();
+                
+                SudokuConstants.chooseTime += stopwatch.ElapsedMilliseconds;
+
+                foreach (List<(int, int)> combination in combinationsList) 
                 {
+                    //SudokuConstants.inObviousTuple++;
                     HashSet<byte> candidatesInGroup = new HashSet<byte>();
                     foreach ((int row, int col) in combination)
                     {
@@ -239,6 +252,8 @@ namespace Sudoku_Solver
                     // if naked tuple
                     if (candidatesInGroup.Count <= combinationSize)
                     {
+                        //SudokuConstants.inObviousTuple++;
+
                         foreach ((int row, int col) in group)
                         {
                             // for every cell not in the current combination, remove naked tuples from candidates
@@ -250,11 +265,40 @@ namespace Sudoku_Solver
 
                                 // if removal changed something, changed is true
                                 changed = changed || !currPossibilities.Equals(possibilitiesBefore);
+                                SudokuConstants.inObviousTuple += changed ? 1 : 0;
+                            }
+                        }
+                    }
+                    // not naked tuple, might be hidden tuple
+                    else
+                    {
+                        HashSet<byte> candidatesOutGroup = new HashSet<byte>();
+                        foreach ((int row, int col) in group)
+                        {
+                            // for every cell not in the current combination, add to a list of possibilities of 
+                            // numbers not in the combination
+                            if (!combination.Contains((row, col)))
+                            {
+                                candidatesOutGroup.UnionWith(board[row, col].GetPossibilities());
+                            }
+                        }
+                        candidatesInGroup.ExceptWith(candidatesOutGroup);
+
+                        if (candidatesInGroup.Count != 0 && candidatesInGroup.Count > combinationSize)
+                            throw new UnsolvableBoardException();
+
+                        if (candidatesInGroup.Count != 0 && candidatesInGroup.Count == combinationSize) //IS THIS GOOD
+                        {
+                            foreach ((int row, int col) in combination)
+                            {
+                                // for every cell not in the current combination, add to a list of possibilities of 
+                                // numbers not in the combination
+                                board[row,col].GetPossibilities().IntersectWith(candidatesInGroup);
+
                             }
                         }
                     }
                 }
-
             }
             return changed;
         }
@@ -262,7 +306,7 @@ namespace Sudoku_Solver
         // find all subsets of size "size" in the group of size n (group.Count())
         // with each recursive call, we choose either to include the current index in the combination or not,
         // and adjust the size accordingly in the recursive call
-        public static List<List<(int, int)>> NChooseK(List<(int, int)> group, int size, int index)
+        public static List<List<(int, int)>> NChooseK(List<(int, int)> group, int size, int index) 
         {
             if (size == 0)
                 return new List<List<(int, int)>>();
@@ -292,6 +336,40 @@ namespace Sudoku_Solver
             }
 
             return combinations;
+        }
+        // 1, 2, 3  size = 2
+        // 
+        public static void NChooseK(List<List<(int,int)>> combinations, List<(int, int)> group, int size, int index = 0)
+        {
+            if (size == 0)
+            {
+                combinations.Add(new List<(int, int)>());
+                return;
+            }
+
+            if (index >= group.Count)
+            {
+                //combinations.Add(new List<(int, int)>());
+                return;
+            }
+            List<List<(int, int)>> includeCurrInComb = new();
+            List<List<(int, int)>> excludeCurrInComb = new();
+
+            NChooseK(includeCurrInComb, group, size - 1, index + 1);
+            NChooseK(excludeCurrInComb, group, size, index + 1);
+
+            // Combinations in includeCurrInComb contain size - 1 numbers, need to add group[index]
+            // Add current number to every combination in includeCurrInComb and add to combinations list 
+            foreach (var curr in includeCurrInComb)
+            {
+                curr.Add(group.ElementAt(index));
+                combinations.Add(curr);
+            }
+
+            foreach (var curr in excludeCurrInComb)
+            {
+                combinations.Add(curr);
+            }
         }
 
         public static (int, int) FindMinPossibilityCell(Cell[,] board)

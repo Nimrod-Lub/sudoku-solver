@@ -10,5 +10,7 @@ namespace Sudoku_Solver
     {
         public static int blockLength;
         public static int boardLength;
+        public static long chooseTime = 0;
+        public static int inObviousTuple= 0;
     }
 }

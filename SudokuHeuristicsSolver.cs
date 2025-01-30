@@ -20,11 +20,17 @@ namespace Sudoku_Solver
         private static Cell[,] SolveSudokuHeuristics(Cell[,] board)
         {
             bool updated = true;
-            while (updated)
+            try
             {
-                updated = SudokuSolverUtils.FindNakedSingles(board) && SudokuSolverUtils.FindObviousTuples(board);
+                while (updated)
+                {
+                    updated = SudokuSolverUtils.FindNakedSingles(board) && SudokuSolverUtils.FindObviousTuples(board);
+                }
             }
-
+            catch (UnsolvableBoardException ube)
+            {
+                return null;
+            }
 
 
             (int, int) indexes = SudokuSolverUtils.FindMinPossibilityCell(board);
@@ -41,8 +47,9 @@ namespace Sudoku_Solver
             foreach (byte b in minPosibilitiesCell.GetPossibilities())
             {
                 minPosibilitiesCell.SetValue(b);
-                SudokuSolverUtils.RemovePossibilities(board, b, row, col);
-                Cell[,] result = SolveSudokuHeuristics(SudokuSolverUtils.CopyBoard(board));
+                Cell[,] boardCopy = SudokuSolverUtils.CopyBoard(board);
+                SudokuSolverUtils.RemovePossibilities(boardCopy, b, row, col);
+                Cell[,] result = SolveSudokuHeuristics(boardCopy);
 
                 if (result != null)
                     return result;
