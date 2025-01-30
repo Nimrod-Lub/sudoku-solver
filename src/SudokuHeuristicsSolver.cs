@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sudoku_Solver
+namespace src
 {
     public class SudokuHeuristicsSolver //TODO fix solver
     {
@@ -16,7 +17,7 @@ namespace Sudoku_Solver
 
             return SolveSudokuHeuristics(sudokuBoard);
         }
-       
+
         private static Cell[,] SolveSudokuHeuristics(Cell[,] board)
         {
             bool updated = true;
@@ -42,12 +43,17 @@ namespace Sudoku_Solver
                 return board;
 
             Cell minPosibilitiesCell = board[row, col];
-            
+
 
             foreach (byte b in minPosibilitiesCell.GetPossibilities())
             {
                 minPosibilitiesCell.SetValue(b);
+                
+                Stopwatch stopwatch = new();
+                stopwatch.Start();
                 Cell[,] boardCopy = SudokuSolverUtils.CopyBoard(board);
+                stopwatch.Stop();
+                SudokuConstants.boardCopyTime += stopwatch.Elapsed.TotalSeconds;
                 SudokuSolverUtils.RemovePossibilities(boardCopy, b, row, col);
                 Cell[,] result = SolveSudokuHeuristics(boardCopy);
 
@@ -60,7 +66,7 @@ namespace Sudoku_Solver
             return null;
         }
 
-       
+
 
     }
 }

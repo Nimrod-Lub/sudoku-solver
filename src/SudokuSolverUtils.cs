@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sudoku_Solver
+namespace src
 {
     public static class SudokuSolverUtils
     {
@@ -117,7 +118,7 @@ namespace Sudoku_Solver
             return boardCopy;
         }
 
-        public static bool FindNakedSingles(Cell[,] board)
+        public static bool FindNakedSingles(Cell[,] board) //TODO add if possibilities = 0 && getvalue = 0
         {
             bool updated = false;
             int boardLength = SudokuConstants.boardLength;
@@ -163,6 +164,10 @@ namespace Sudoku_Solver
 
         public static bool FindObviousTuples(Cell[,] board)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+
             int boardLength = SudokuConstants.boardLength;
             int blockLength = SudokuConstants.blockLength;
             List<(int, int)> currentCheckedGroupRows = new List<(int, int)>();
@@ -219,6 +224,8 @@ namespace Sudoku_Solver
                         || FindObviousTuplesGroup(board, currentCheckedGroupBlocks);
                 }
             }
+            stopwatch.Stop();
+            SudokuConstants.obviousTuplesTime += stopwatch.Elapsed.TotalSeconds;
             return changed;
         }
 
@@ -228,19 +235,20 @@ namespace Sudoku_Solver
 
             for (int combinationSize = 2; combinationSize <= MAXIMUM_GROUP_LENGTH; combinationSize++)
             {
-               // SudokuConstants.inObviousTuple++;
+                // SudokuConstants.inObviousTuple++;
                 // get all combinations with size combinationSize in the group, starting from index 0
 
-                System.Diagnostics.Stopwatch stopwatch = new();
+                Stopwatch stopwatch = new();
                 stopwatch.Start();
+
                 //List<List<(int, int)>> combinationsList = NChooseK(group, combinationSize, 0);
                 List<List<(int, int)>> combinationsList = new();
                 NChooseK(combinationsList, group, combinationSize, 0);
-                stopwatch.Stop();
-                
-                SudokuConstants.chooseTime += stopwatch.ElapsedMilliseconds;
 
-                foreach (List<(int, int)> combination in combinationsList) 
+                stopwatch.Stop();
+                SudokuConstants.chooseTime += stopwatch.Elapsed.TotalSeconds;
+
+                foreach (List<(int, int)> combination in combinationsList)
                 {
                     //SudokuConstants.inObviousTuple++;
                     HashSet<byte> candidatesInGroup = new HashSet<byte>();
@@ -293,7 +301,7 @@ namespace Sudoku_Solver
                             {
                                 // for every cell not in the current combination, add to a list of possibilities of 
                                 // numbers not in the combination
-                                board[row,col].GetPossibilities().IntersectWith(candidatesInGroup);
+                                board[row, col].GetPossibilities().IntersectWith(candidatesInGroup);
 
                             }
                         }
@@ -306,7 +314,7 @@ namespace Sudoku_Solver
         // find all subsets of size "size" in the group of size n (group.Count())
         // with each recursive call, we choose either to include the current index in the combination or not,
         // and adjust the size accordingly in the recursive call
-        public static List<List<(int, int)>> NChooseK(List<(int, int)> group, int size, int index) 
+        public static List<List<(int, int)>> NChooseK(List<(int, int)> group, int size, int index)
         {
             if (size == 0)
                 return new List<List<(int, int)>>();
@@ -337,9 +345,8 @@ namespace Sudoku_Solver
 
             return combinations;
         }
-        // 1, 2, 3  size = 2
-        // 
-        public static void NChooseK(List<List<(int,int)>> combinations, List<(int, int)> group, int size, int index = 0)
+
+        public static void NChooseK(List<List<(int, int)>> combinations, List<(int, int)> group, int size, int index = 0)
         {
             if (size == 0)
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
-namespace Sudoku_Solver
+namespace src
 {
     public static class BoardBuilder
     {
@@ -25,7 +25,7 @@ namespace Sudoku_Solver
 
             return sudokuBoard;
             //if (IsSolvable(sudokuBoard))
-              //  return sudokuBoard;
+            //  return sudokuBoard;
             //return null;
         }
 

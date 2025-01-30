@@ -2,13 +2,13 @@
 using System.Diagnostics;
 using System.Drawing;
 
-namespace Sudoku_Solver
+namespace src
 {
     public class Program
     {
-        public static void Main(String[] args)
+        public static void Main(string[] args)
         {
-            
+
             CLIHandler cliHandler = new CLIHandler();
             IInputHandler inputHandler = cliHandler;
             IOutputHandler outputHandler = cliHandler;
@@ -35,11 +35,13 @@ namespace Sudoku_Solver
                 Cell[,] result = SudokuHeuristicsSolver.Solve(board);
                 solveTimer.Stop();
 
-                Console.WriteLine($"Choose took {SudokuConstants.chooseTime} milliseconds");
+                Console.WriteLine($"Choose took {SudokuConstants.chooseTime} seconds");
+                Console.WriteLine($"Board copy took {SudokuConstants.boardCopyTime} seconds");
                 Console.WriteLine($"Entered obvious tuple {SudokuConstants.inObviousTuple} times");
+                Console.WriteLine($"Obvious tuple took {SudokuConstants.obviousTuplesTime - SudokuConstants.chooseTime} seconds");
 
                 long solveLenMillis = solveTimer.ElapsedMilliseconds;
-                outputHandler.Output(String.Format("Time taken to solve: {0} milliseconds", solveLenMillis));
+                outputHandler.Output(string.Format("Time taken to solve: {0} milliseconds", solveLenMillis));
 
                 if (result == null)
                 {

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sudoku_Solver
+namespace src
 {
     public static class InputValidityChecker
     {
-        public static void CheckValidity(String input) 
+        public static void CheckValidity(string input)
         {
             if (input == null || input.Length == 0)
             {
@@ -16,15 +16,15 @@ namespace Sudoku_Solver
             }
 
             double boardLength = Math.Sqrt(input.Length);
-            if ( boardLength != Math.Floor(boardLength))
+            if (boardLength != Math.Floor(boardLength))
             {
                 Environment.Exit(1); // will throw an exception
             }
 
             double blockLength = Math.Sqrt(boardLength);
-            if (blockLength != Math.Floor(blockLength)) 
-            { 
-                Environment.Exit(1); 
+            if (blockLength != Math.Floor(blockLength))
+            {
+                Environment.Exit(1);
             }
 
             int max = 0;
@@ -47,7 +47,7 @@ namespace Sudoku_Solver
 
             SudokuConstants.boardLength = (int)boardLength;
             SudokuConstants.blockLength = (int)blockLength;
-            
+
         }
     }
 }

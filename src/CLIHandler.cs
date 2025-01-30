@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sudoku_Solver
+namespace src
 {
     public class CLIHandler : IInputHandler, IOutputHandler
     {
@@ -17,7 +17,7 @@ namespace Sudoku_Solver
         {
             Console.WriteLine(str);
         }
-       
+
         public void OutputBoard(Cell[,] board)
         {
             if (board == null) //TODO test if this is needed
@@ -39,9 +39,9 @@ namespace Sudoku_Solver
                 for (int j = 0; j < boardLength; j++) // Iterates over one row
                 {
                     // converts from int to ascii value and displays as char e.g. converts 1 to 49/'1'
-                    row += ((char)(board[i, j].GetValue() + '0')) + " ";
+                    row += (char)(board[i, j].GetValue() + '0') + " ";
                     if ((j + 1) % blockLength == 0)
-                    row += "| ";
+                        row += "| ";
                 }
                 Console.WriteLine(row);
             }

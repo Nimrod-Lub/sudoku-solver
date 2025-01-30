@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Sudoku_Solver
+namespace src
 {
     public interface IInputHandler
     {

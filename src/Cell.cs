@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sudoku_Solver
+namespace src
 {
     public class Cell
     {
@@ -12,18 +12,18 @@ namespace Sudoku_Solver
         private HashSet<byte> possibilites;
         //private List<Tuple<byte, byte, byte>> possiblityChanges;
 
-        public Cell() 
+        public Cell()
         {
             value = 0;
             possibilites = new HashSet<byte>
                 (Enumerable.Range(1, SudokuConstants.boardLength).Select(x => (byte)x));
-           // possiblityChanges = new();
+            // possiblityChanges = new();
         }
 
         public Cell(Cell cell)
         {
-            this.value = cell.value;
-            this.possibilites = new HashSet<byte>(cell.possibilites);
+            value = cell.value;
+            possibilites = new HashSet<byte>(cell.possibilites);
         }
 
         public byte GetValue()

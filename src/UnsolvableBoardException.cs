@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace Sudoku_Solver
+namespace src
 {
     public class UnsolvableBoardException : Exception
     {

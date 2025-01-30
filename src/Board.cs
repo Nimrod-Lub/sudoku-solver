@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sudoku_Solver
+namespace src
 {
     public class Board
     {
@@ -55,7 +55,7 @@ namespace Sudoku_Solver
                 board[i, col].RemovePossibility(num);
                 board[row, i].RemovePossibility(num);
             }
-           
+
             for (int i = 0; i < blockLength; i++)
             {
                 for (int j = 0; j < blockLength; j++)

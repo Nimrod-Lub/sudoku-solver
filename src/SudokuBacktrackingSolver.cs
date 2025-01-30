@@ -6,10 +6,37 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Sudoku_Solver //TODO maybe use arr of booleans rather than arr of ints for extra speed?
+namespace src
 {
-    public class SudokuSolver
+    public class SudokuBacktrackingSolver
     {
+
+        //public static bool SolveSudokuBacktrackingMinPossibilites(Cell[,] board)
+        //{
+        //    Tuple<int, int> indexes = FindMinPossibilityCell(board);
+        //    int row = indexes.Item1;
+        //    int col = indexes.Item2;
+
+        //    if (row == -1) // all cells have a value
+        //        return true;
+
+        //    Cell currentCell = board[row, col];
+
+        //    foreach (byte num in currentCell.GetPossibilities())
+        //    {
+        //        currentCell.SetValue(num);
+        //        RemovePossibilities(board, row, col);
+        //        bool result = SolveSudokuBacktrackingMinPossibilites(board);
+        //        if (result) return true;
+        //        currentCell.SetValue(0);
+        //        UpdatePossibilities(board, row, col);
+
+        //    }
+
+
+        //}
+
+
         public static bool SolveSudokuBacktracking(int[,] board, int row, int col)
         {
             int boardLength = SudokuConstants.boardLength;
@@ -98,7 +125,7 @@ namespace Sudoku_Solver //TODO maybe use arr of booleans rather than arr of ints
                     if (currNum != 0)
                         counterArr[currNum - 1]++;
                 }
-                
+
                 if (HasDuplicates(counterArr))
                 {
                     return true;
@@ -142,9 +169,9 @@ namespace Sudoku_Solver //TODO maybe use arr of booleans rather than arr of ints
             {
                 for (int blockCol = 0; blockCol < blockLength; blockCol++)
                 {
-                    for (int i = 0;i < blockLength; i++)
+                    for (int i = 0; i < blockLength; i++)
                     {
-                        for (int j = 0; j < blockLength ; j++)
+                        for (int j = 0; j < blockLength; j++)
                         {
                             int currRow = blockRow * blockLength + i;
                             int currCol = blockCol * blockLength + j;
@@ -153,7 +180,7 @@ namespace Sudoku_Solver //TODO maybe use arr of booleans rather than arr of ints
                                 counterArr[currNum - 1]++;
                         }
                     }
-                    
+
                     if (HasDuplicates(counterArr))
                     {
                         return true;
@@ -161,7 +188,7 @@ namespace Sudoku_Solver //TODO maybe use arr of booleans rather than arr of ints
                     Array.Clear(counterArr, 0, counterArr.Length);
 
                 }
-              
+
             }
             return false;
         }

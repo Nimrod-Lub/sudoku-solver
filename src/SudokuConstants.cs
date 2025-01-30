@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sudoku_Solver
+namespace src
 {
     public class SudokuConstants
     {
         public static int blockLength;
         public static int boardLength;
-        public static long chooseTime = 0;
-        public static int inObviousTuple= 0;
+        public static double chooseTime = 0;
+        public static double boardCopyTime = 0;
+        public static double obviousTuplesTime = 0;
+        public static int inObviousTuple = 0;
     }
 }
