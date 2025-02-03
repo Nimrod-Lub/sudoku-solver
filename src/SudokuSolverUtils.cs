@@ -10,115 +10,8 @@ namespace src
     public static class SudokuSolverUtils
     {
         private static readonly int MAXIMUM_GROUP_LENGTH = 2;
-        public static bool IsSolvable(Cell[,] sudokuBoard)
-        {
 
-            if (HasDuplicatesInRow(sudokuBoard)
-                || HasDuplicatesInColumn(sudokuBoard)
-                || HasDuplicatesInBlock(sudokuBoard))
-                return false;
-            return true;
-        }
-
-        public static bool HasDuplicatesInRow(Cell[,] sudokuBoard)
-        {
-            int boardLength = SudokuConstants.boardLength;
-            int[] counterArr = new int[boardLength];
-
-            for (int i = 0; i < boardLength; i++)
-            {
-                for (int j = 0; j < boardLength; j++)
-                {
-                    int currNum = sudokuBoard[i, j].GetValue();
-                    if (currNum != 0)
-                        counterArr[currNum - 1]++;
-                }
-
-                if (HasDuplicates(counterArr))
-                {
-                    return true;
-                }
-                Array.Clear(counterArr, 0, counterArr.Length);
-            }
-            return false;
-        }
-
-        public static bool HasDuplicatesInColumn(Cell[,] sudokuBoard)
-        {
-            int boardLength = SudokuConstants.boardLength;
-            int[] counterArr = new int[boardLength];
-
-            for (int i = 0; i < boardLength; i++)
-            {
-                for (int j = 0; j < boardLength; j++)
-                {
-                    int currNum = sudokuBoard[j, i].GetValue();
-                    if (currNum != 0)
-                        counterArr[currNum - 1]++;
-                }
-
-                if (HasDuplicates(counterArr))
-                {
-                    return true;
-                }
-                Array.Clear(counterArr, 0, counterArr.Length);
-            }
-            return false;
-        }
-
-        public static bool HasDuplicatesInBlock(Cell[,] sudokuBoard)
-        {
-            int boardLength = SudokuConstants.boardLength;
-            int blockLength = SudokuConstants.blockLength;
-            int[] counterArr = new int[boardLength];
-
-            // Assuming block length = num of blocks in each row/column
-            for (int blockRow = 0; blockRow < blockLength; blockRow++)
-            {
-                for (int blockCol = 0; blockCol < blockLength; blockCol++)
-                {
-                    for (int i = 0; i < blockLength; i++)
-                    {
-                        for (int j = 0; j < blockLength; j++)
-                        {
-                            int currRow = blockRow * blockLength + i;
-                            int currCol = blockCol * blockLength + j;
-                            int currNum = sudokuBoard[currRow, currCol].GetValue();
-                            if (currNum != 0)
-                                counterArr[currNum - 1]++;
-                        }
-                    }
-
-                    if (HasDuplicates(counterArr))
-                    {
-                        return true;
-                    }
-                    Array.Clear(counterArr, 0, counterArr.Length);
-
-                }
-
-            }
-            return false;
-        }
-
-        // Linq that checks if there's a number who appeared more than once in the current row/column/block
-        public static bool HasDuplicates(int[] counterArr) { return !counterArr.All(number => number <= 1); }
-
-        public static Cell[,] CopyBoard(Cell[,] board)
-        {
-            int boardLength = SudokuConstants.boardLength;
-            Cell[,] boardCopy = new Cell[boardLength, boardLength];
-            for (int i = 0; i < boardLength; i++)
-            {
-                for (int j = 0; j < boardLength; j++)
-                {
-                    boardCopy[i, j] = new Cell(board[i, j]);
-                }
-            }
-            return boardCopy;
-        }
-
-        public static bool FindNakedSingles(Cell[,] board) //TODO add if possibilities = 0 && getvalue = 0
+        public static bool FindNakedSingles(Cell[,] board)
         {
             bool updated = false;
             int boardLength = SudokuConstants.boardLength;
@@ -261,6 +154,9 @@ namespace src
                     if (candidatesInGroup.Count <= combinationSize)
                     {
                         //SudokuConstants.inObviousTuple++;
+                        
+                        Stopwatch stop2 = new Stopwatch();
+                        stop2.Start();
 
                         foreach ((int row, int col) in group)
                         {
@@ -276,10 +172,15 @@ namespace src
                                 SudokuConstants.inObviousTuple += changed ? 1 : 0;
                             }
                         }
+                        stop2.Stop();
+                        SudokuConstants.nakedTuplesTime += stopwatch.Elapsed.TotalSeconds;
                     }
                     // not naked tuple, might be hidden tuple
                     else
                     {
+                        Stopwatch stop3 = new Stopwatch();
+                        stop3.Start();
+
                         HashSet<byte> candidatesOutGroup = new HashSet<byte>();
                         foreach ((int row, int col) in group)
                         {
@@ -292,7 +193,7 @@ namespace src
                         }
                         candidatesInGroup.ExceptWith(candidatesOutGroup);
 
-                        if (candidatesInGroup.Count != 0 && candidatesInGroup.Count > combinationSize)
+                        if (candidatesInGroup.Count > combinationSize)
                             throw new UnsolvableBoardException();
 
                         if (candidatesInGroup.Count != 0 && candidatesInGroup.Count == combinationSize) //IS THIS GOOD
@@ -305,15 +206,15 @@ namespace src
 
                             }
                         }
+                        stop3.Stop();
+                        SudokuConstants.hiddenTuplesTime += stop3.Elapsed.TotalSeconds;
                     }
                 }
             }
             return changed;
         }
 
-        // find all subsets of size "size" in the group of size n (group.Count())
-        // with each recursive call, we choose either to include the current index in the combination or not,
-        // and adjust the size accordingly in the recursive call
+        //outdated version
         public static List<List<(int, int)>> NChooseK(List<(int, int)> group, int size, int index)
         {
             if (size == 0)
@@ -346,6 +247,10 @@ namespace src
             return combinations;
         }
 
+
+        // find all subsets of size "size" in the group of size n (group.Count())
+        // with each recursive call, we choose either to include the current index in the combination or not,
+        // and adjust the size accordingly in the recursive call
         public static void NChooseK(List<List<(int, int)>> combinations, List<(int, int)> group, int size, int index = 0)
         {
             if (size == 0)

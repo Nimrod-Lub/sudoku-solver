@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace src
 {
-    public class Board
+    public static class Board
     {
-        private Cell[,] board;
-
-        public Board(string input)
+        public static Cell[,] BuildBoard(string input)
         {
             int boardLength = SudokuConstants.boardLength;
-            board = new Cell[boardLength, boardLength];
+            Cell[,] board = new Cell[boardLength, boardLength];
             for (int i = 0; i < boardLength; i++)
             {
                 for (int j = 0; j < boardLength; j++)
@@ -22,12 +20,11 @@ namespace src
                     board[i, j].SetValue((byte)(input.ElementAt(i * boardLength + j) - '0'));
                 }
             }
-
-            InitializePossibilities();
-
+            InitializePossibilities(board);
+            return board;
         }
 
-        private void InitializePossibilities()
+        public static void InitializePossibilities(Cell[,] board)
         {
             int boardLength = SudokuConstants.boardLength;
             for (int i = 0; i < boardLength; i++)
@@ -37,13 +34,13 @@ namespace src
                     byte currValue = board[i, j].GetValue();
                     if (currValue != 0)
                     {
-                        RemovePossibilities(currValue, i, j);
+                        RemovePossibilities(board, currValue, i, j);
                     }
                 }
             }
         }
 
-        private void RemovePossibilities(byte num, int row, int col)
+        public static void RemovePossibilities(Cell[,] board, byte num, int row, int col)
         {
             int boardLength = SudokuConstants.boardLength;
             int blockLength = SudokuConstants.blockLength;
@@ -65,37 +62,122 @@ namespace src
             }
         }
 
-        public Cell[,] GetBoard()
+        public static bool IsSolvable(Cell[,] sudokuBoard)
         {
-            return board;
+
+            if (HasDuplicatesInRow(sudokuBoard)
+                || HasDuplicatesInColumn(sudokuBoard)
+                || HasDuplicatesInBlock(sudokuBoard))
+                return false;
+            return true;
         }
 
+        public static bool HasDuplicatesInRow(Cell[,] sudokuBoard)
+        {
+            int boardLength = SudokuConstants.boardLength;
+            int[] counterArr = new int[boardLength];
+
+            for (int i = 0; i < boardLength; i++)
+            {
+                for (int j = 0; j < boardLength; j++)
+                {
+                    int currNum = sudokuBoard[i, j].GetValue();
+                    if (currNum != 0)
+                        counterArr[currNum - 1]++;
+                }
+
+                if (HasDuplicates(counterArr))
+                {
+                    return true;
+                }
+                Array.Clear(counterArr, 0, counterArr.Length);
+            }
+            return false;
+        }
+
+        public static bool HasDuplicatesInColumn(Cell[,] sudokuBoard)
+        {
+            int boardLength = SudokuConstants.boardLength;
+            int[] counterArr = new int[boardLength];
+
+            for (int i = 0; i < boardLength; i++)
+            {
+                for (int j = 0; j < boardLength; j++)
+                {
+                    int currNum = sudokuBoard[j, i].GetValue();
+                    if (currNum != 0)
+                        counterArr[currNum - 1]++;
+                }
+
+                if (HasDuplicates(counterArr))
+                {
+                    return true;
+                }
+                Array.Clear(counterArr, 0, counterArr.Length);
+            }
+            return false;
+        }
+
+        public static bool HasDuplicatesInBlock(Cell[,] sudokuBoard)
+        {
+            int boardLength = SudokuConstants.boardLength;
+            int blockLength = SudokuConstants.blockLength;
+            int[] counterArr = new int[boardLength];
+
+            // Assuming block length = num of blocks in each row/column
+            for (int blockRow = 0; blockRow < blockLength; blockRow++)
+            {
+                for (int blockCol = 0; blockCol < blockLength; blockCol++)
+                {
+                    for (int i = 0; i < blockLength; i++)
+                    {
+                        for (int j = 0; j < blockLength; j++)
+                        {
+                            int currRow = blockRow * blockLength + i;
+                            int currCol = blockCol * blockLength + j;
+                            int currNum = sudokuBoard[currRow, currCol].GetValue();
+                            if (currNum != 0)
+                                counterArr[currNum - 1]++;
+                        }
+                    }
+
+                    if (HasDuplicates(counterArr))
+                    {
+                        return true;
+                    }
+                    Array.Clear(counterArr, 0, counterArr.Length);
+
+                }
+
+            }
+            return false;
+        }
+
+        // Linq that checks if there's a number who appeared more than once in the current row/column/block
+        public static bool HasDuplicates(int[] counterArr) { return !counterArr.All(number => number <= 1); }
+
+        public static Cell[,] CopyBoard(Cell[,] board)
+        {
+            int boardLength = SudokuConstants.boardLength;
+            Cell[,] boardCopy = new Cell[boardLength, boardLength];
+            for (int i = 0; i < boardLength; i++)
+            {
+                for (int j = 0; j < boardLength; j++)
+                {
+                    boardCopy[i, j] = new Cell(board[i, j]);
+                }
+            }
+            return boardCopy;
+        }
+
+        public static string boardToString(Cell[,] board)
+        {
+            string result = "";
+            foreach (Cell cell in board)
+            {
+                result += (char)(cell.GetValue() + '0');
+            }
+            return result;
+        }
     }
 }
-
-//int[,] board
-//List(<tupple(int,int)>) [,] changes
-//List<Tuple(int,int), int value > possibilitychange;
-
-//board[0, 0] = 4;
-//for all neighbors (x,y) with possibilitty 4:
-//    remove pos 4 from x,y
-//    add x,y to changes(i,j)
-
-
-
-
-
-
-// option 1 - 3 boolean matrixes.
-// to find min
-// for each tile check in every matrix - 3n time *  n^2 = theta(n^3)
-// to update after placing number - theta(1)
-// memory - 3n^2 bits
-// false - not found, true - found
-
-// option 2 - 81 boolean arrays -- keeping valid possibilities for a specific entry
-// to find min
-// for each tile check array - n time * n^2 = theta(n^3)
-// to update after placing number - 3n = theta(n)
-// memory - n^2 * n = n^3 hashsets

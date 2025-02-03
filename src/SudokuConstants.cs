@@ -13,6 +13,8 @@ namespace src
         public static double chooseTime = 0;
         public static double boardCopyTime = 0;
         public static double obviousTuplesTime = 0;
+        public static double nakedTuplesTime = 0;
+        public static double hiddenTuplesTime = 0;
         public static int inObviousTuple = 0;
     }
 }

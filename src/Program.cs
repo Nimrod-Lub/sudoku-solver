@@ -24,9 +24,9 @@ namespace src
                 InputValidityChecker.CheckValidity(input);
 
                 //int[,] sudokuBoard = BoardBuilder.BuildBoard(input);
-                Board board = new Board(input);
+                Cell[,] board = Board.BuildBoard(input);
                 outputHandler.Output("The inputted board is:\n\n");
-                outputHandler.OutputBoard(board.GetBoard());
+                outputHandler.OutputBoard(board);
 
 
                 Stopwatch solveTimer = new Stopwatch();
@@ -39,6 +39,8 @@ namespace src
                 Console.WriteLine($"Board copy took {SudokuConstants.boardCopyTime} seconds");
                 Console.WriteLine($"Entered obvious tuple {SudokuConstants.inObviousTuple} times");
                 Console.WriteLine($"Obvious tuple took {SudokuConstants.obviousTuplesTime - SudokuConstants.chooseTime} seconds");
+                Console.WriteLine($"Naked tuple took {SudokuConstants.nakedTuplesTime} seconds");
+                Console.WriteLine($"Hidden tuple took {SudokuConstants.hiddenTuplesTime} seconds");
 
                 long solveLenMillis = solveTimer.ElapsedMilliseconds;
                 outputHandler.Output(string.Format("Time taken to solve: {0} milliseconds", solveLenMillis));
@@ -51,6 +53,8 @@ namespace src
                 {
                     outputHandler.Output("\n\nThe solution of the board is:\n\n");
                     outputHandler.OutputBoard(result);
+                    outputHandler.Output("\n\nSolution of the board in string format:\n\n");
+                    outputHandler.Output(Board.boardToString(result));
                 }
             }
         }

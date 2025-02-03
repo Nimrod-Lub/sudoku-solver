@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace src
 {
-    public class SudokuHeuristicsSolver //TODO fix solver
+    public class SudokuHeuristicsSolver
     {
-        public static Cell[,] Solve(Board board)
+        public static Cell[,] Solve(Cell[,] board)
         {
-            Cell[,] sudokuBoard = board.GetBoard();
-            if (!SudokuSolverUtils.IsSolvable(sudokuBoard))
+            if (!Board.IsSolvable(board))
                 return null;
 
-            return SolveSudokuHeuristics(sudokuBoard);
+            return SolveSudokuHeuristics(board);
         }
 
         private static Cell[,] SolveSudokuHeuristics(Cell[,] board)
@@ -26,6 +25,7 @@ namespace src
                 while (updated)
                 {
                     updated = SudokuSolverUtils.FindNakedSingles(board) && SudokuSolverUtils.FindObviousTuples(board);
+                    //updated = SudokuSolverUtils.FindObviousTuples(board);
                 }
             }
             catch (UnsolvableBoardException ube)
@@ -44,14 +44,13 @@ namespace src
 
             Cell minPosibilitiesCell = board[row, col];
 
-
             foreach (byte b in minPosibilitiesCell.GetPossibilities())
             {
                 minPosibilitiesCell.SetValue(b);
                 
                 Stopwatch stopwatch = new();
                 stopwatch.Start();
-                Cell[,] boardCopy = SudokuSolverUtils.CopyBoard(board);
+                Cell[,] boardCopy = Board.CopyBoard(board);
                 stopwatch.Stop();
                 SudokuConstants.boardCopyTime += stopwatch.Elapsed.TotalSeconds;
                 SudokuSolverUtils.RemovePossibilities(boardCopy, b, row, col);
