@@ -10,6 +10,9 @@ namespace src
     {
         public static int blockLength;
         public static int boardLength;
+        public static readonly string EXIT_STRING = "exit";
+
+
         public static double chooseTime = 0;
         public static double boardCopyTime = 0;
         public static double obviousTuplesTime = 0;

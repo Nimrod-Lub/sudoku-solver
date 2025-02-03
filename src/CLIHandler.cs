@@ -20,11 +20,6 @@ namespace src
 
         public void OutputBoard(Cell[,] board)
         {
-            if (board == null) //TODO test if this is needed
-            {
-                Console.WriteLine("No solution found");
-                return;
-            }
             int boardLength = SudokuConstants.boardLength;
             int blockLength = SudokuConstants.blockLength;
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using src.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,21 +11,27 @@ namespace src
     {
         public static void CheckValidity(string input)
         {
-            if (input == null || input.Length == 0)
+            if (input == null)
             {
-                Environment.Exit(1); // will throw an exception
+                throw new EndOfStreamException("Reached EOF");
+            }
+            if (input.Length == 0)
+            {
+                throw new InvalidInputException("No input was provided");
             }
 
             double boardLength = Math.Sqrt(input.Length);
             if (boardLength != Math.Floor(boardLength))
             {
-                Environment.Exit(1); // will throw an exception
+                throw new InvalidInputException("Square root of input length must be an integer. " +
+                    $"Current input length is {input.Length}");
             }
 
             double blockLength = Math.Sqrt(boardLength);
             if (blockLength != Math.Floor(blockLength))
             {
-                Environment.Exit(1);
+                throw new InvalidInputException("4th root of input length must be an integer. " +
+                    $"Current input length is {input.Length}");
             }
 
             int max = 0;
@@ -34,15 +41,20 @@ namespace src
                 int curr = c - '0';
                 if (curr < 0)
                 {
-                    Environment.Exit(1); // will throw an exception
+                    throw new InvalidInputException($"For a {boardLength}x{boardLength} board, " +
+                        $"you must input values between 0 and {'0' + boardLength} in the ascii table. " +
+                    $"The char {c} is out of that range (lower than '0')");
                 }
                 if (curr > max)
                     max = curr;
             }
+            
 
             if (max > boardLength)
             {
-                Environment.Exit(1); // will throw an exception
+                throw new InvalidInputException($"For a {boardLength}x{boardLength} board, " +
+                        $"you must input values between 0 and {(char)(boardLength + '0')} in the ascii table. " +
+                    $"The char {(char)(max + '0')} is out of that range (higher than '0')");
             }
 
             SudokuConstants.boardLength = (int)boardLength;

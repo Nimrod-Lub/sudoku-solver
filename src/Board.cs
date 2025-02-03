@@ -170,7 +170,7 @@ namespace src
             return boardCopy;
         }
 
-        public static string boardToString(Cell[,] board)
+        public static string BoardToString(Cell[,] board)
         {
             string result = "";
             foreach (Cell cell in board)
