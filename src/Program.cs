@@ -1,5 +1,6 @@
 ﻿using src.Exceptions;
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 
@@ -9,7 +10,6 @@ namespace src
     {
         public static void Main(string[] args)
         {
-
             CLIHandler cliHandler = new CLIHandler();
             IInputHandler inputHandler = cliHandler;
             IOutputHandler outputHandler = cliHandler;
@@ -40,12 +40,11 @@ namespace src
                     Cell[,] result = SudokuHeuristicsSolver.Solve(board);
                     solveTimer.Stop();
 
-                    //Console.WriteLine($"Choose took {SudokuConstants.chooseTime} seconds");
-                    //Console.WriteLine($"Board copy took {SudokuConstants.boardCopyTime} seconds");
-                    //Console.WriteLine($"Entered obvious tuple {SudokuConstants.inObviousTuple} times");
-                    //Console.WriteLine($"Obvious tuple took {SudokuConstants.obviousTuplesTime - SudokuConstants.chooseTime} seconds");
-                    //Console.WriteLine($"Naked tuple took {SudokuConstants.nakedTuplesTime} seconds");
-                    //Console.WriteLine($"Hidden tuple took {SudokuConstants.hiddenTuplesTime} seconds");
+                    Console.WriteLine($"Board copy took {SudokuConstants.boardCopyTime} seconds");
+                    Console.WriteLine($"Entered obvious tuple {SudokuConstants.inObviousTuple} times");
+                    Console.WriteLine($"Obvious tuple took {SudokuConstants.obviousTuplesTime} seconds");
+                    Console.WriteLine($"Naked tuple took {SudokuConstants.nakedTuplesTime} seconds");
+                    Console.WriteLine($"Hidden tuple took {SudokuConstants.hiddenTuplesTime} seconds");
 
                     long solveLenMillis = solveTimer.ElapsedMilliseconds;
                     outputHandler.Output(string.Format("Time taken to solve: {0} milliseconds", solveLenMillis));

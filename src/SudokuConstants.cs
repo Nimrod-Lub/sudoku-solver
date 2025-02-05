@@ -10,14 +10,15 @@ namespace src
     {
         public static int blockLength;
         public static int boardLength;
+        public static readonly int MAXIMUM_GROUP_SIZE = 2;
         public static readonly string EXIT_STRING = "exit";
-
-
-        public static double chooseTime = 0;
+        public static Dictionary<(int, int),List<List<int>>> storedCombinations = new();
+        
         public static double boardCopyTime = 0;
         public static double obviousTuplesTime = 0;
         public static double nakedTuplesTime = 0;
         public static double hiddenTuplesTime = 0;
         public static int inObviousTuple = 0;
+
     }
 }

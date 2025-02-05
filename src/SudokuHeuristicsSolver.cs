@@ -27,6 +27,7 @@ namespace src
                 {
                     updated = SudokuSolverUtils.FindNakedSingles(board) && SudokuSolverUtils.FindObviousTuples(board);
                     //updated = SudokuSolverUtils.FindObviousTuples(board);
+                    //updated = false;
                 }
             }
             catch (UnsolvableBoardException ube)
