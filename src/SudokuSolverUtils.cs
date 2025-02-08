@@ -22,11 +22,13 @@ namespace src
                 for (int j = 0; j < boardLength; j++)
                 {
                     Cell currCell = board[i, j];
-                    HashSet<byte> possibilities = currCell.GetPossibilities();
-                    if (possibilities.Count == 1 && currCell.GetValue() == 0)
+                    //HashSet<byte> possibilities = currCell.GetPossibilities();
+                    int possibilities = currCell.GetPossibilities();
+                    // if (possibilities.Count == 1 && currCell.GetValue() == 0)
+                    if (BitwiseUtils.GetPossibilitiesCount(possibilities) == 1 && currCell.GetValue() == 0)
                     {
-                        //Console.WriteLine("Entered");
-                        byte onlyNum = possibilities.ElementAt(0);
+                        // byte onlyNum = possibilities.ElementAt(0);
+                        byte onlyNum = BitwiseUtils.GetLastNum(possibilities);
                         currCell.SetValue(onlyNum);
                         RemovePossibilities(board, onlyNum, i, j);
                         updated = true;
@@ -88,9 +90,14 @@ namespace src
                         currentCheckedGroupCols.Add((col, row));
                     }
                 }
-                changed = changed
-                    || FindObviousTuplesGroup(board, currentCheckedGroupRows)
-                    || FindObviousTuplesGroup(board, currentCheckedGroupCols);
+                if (currentCheckedGroupRows.Count > SudokuConstants.MAXIMUM_GROUP_SIZE)
+                    changed = changed || FindObviousTuplesGroup(board, currentCheckedGroupRows);
+                if (currentCheckedGroupCols.Count > SudokuConstants.MAXIMUM_GROUP_SIZE)
+                    changed = changed || FindObviousTuplesGroup(board, currentCheckedGroupCols);
+
+                //changed = changed
+                //    || FindObviousTuplesGroup(board, currentCheckedGroupRows)
+                //    || FindObviousTuplesGroup(board, currentCheckedGroupCols);
             }
 
             for (int blockRow = 0; blockRow < blockLength; blockRow++)
@@ -114,9 +121,10 @@ namespace src
 
                         }
                     }
-
-                    changed = changed
-                        || FindObviousTuplesGroup(board, currentCheckedGroupBlocks);
+                    if (currentCheckedGroupBlocks.Count > SudokuConstants.MAXIMUM_GROUP_SIZE)
+                        changed = changed || FindObviousTuplesGroup(board, currentCheckedGroupBlocks);
+                   // changed = changed
+                   //    || FindObviousTuplesGroup(board, currentCheckedGroupBlocks);
                 }
             }
             stopwatch.Stop();
@@ -257,7 +265,8 @@ namespace src
                 for (int j = 0; j < boardLength; j++)
                 {
                     Cell currCell = board[i, j];
-                    int currPossibilityCnt = currCell.GetPossibilities().Count;
+                    //int currPossibilityCnt = currCell.GetPossibilities().Count;
+                    int currPossibilityCnt = currCell.GetPossibilitiesCount();
                     if (currCell.GetValue() == 0 && currPossibilityCnt < minPossibilityCnt)
                     {
                         minPossibilityIndex = (i, j);
@@ -274,24 +283,28 @@ namespace src
             Stopwatch stopwatch = new Stopwatch();
 
             bool changed = false;
-            HashSet<byte> candidatesInGroup = new HashSet<byte>();
+            // HashSet<byte> candidatesInGroup = new HashSet<byte>();
+            int candidatesInGroup = 0;
 
             stopwatch.Restart();
             
             foreach ((int row, int col) in combination)
             {
-                candidatesInGroup.UnionWith(board[row, col].GetPossibilities());
+                // candidatesInGroup.UnionWith(board[row, col].GetPossibilities());
+                candidatesInGroup |= board[row, col].GetPossibilities();
             }
             
             stopwatch.Stop();
             SudokuConstants.obviousTuplesTime += stopwatch.Elapsed.TotalSeconds;
 
 
-            if (candidatesInGroup.Count < combination.Count)
+            // if (candidatesInGroup.Count < combination.Count)
+            if (BitwiseUtils.GetPossibilitiesCount(candidatesInGroup) < combination.Count)
                 throw new UnsolvableBoardException();
 
-            // if naked tuple
-            if (candidatesInGroup.Count <= combination.Count)
+            // If naked tuple
+            // if (candidatesInGroup.Count <= combination.Count)
+            if (BitwiseUtils.GetPossibilitiesCount(candidatesInGroup) == combination.Count)
             {
                 //SudokuConstants.inObviousTuple++;
 
@@ -302,12 +315,18 @@ namespace src
                     // for every cell not in the current combination, remove naked tuples from candidates
                     if (!combination.Contains((row, col)))
                     {
-                        HashSet<byte> currPossibilities = board[row, col].GetPossibilities();
-                        HashSet<byte> possibilitiesBefore = new HashSet<byte>(currPossibilities);
-                        currPossibilities.ExceptWith(candidatesInGroup);
+                        // HashSet<byte> currPossibilities = board[row, col].GetPossibilities();
+                        int currPossibilities = board[row, col].GetPossibilities();
 
-                        // if removal changed something, changed is true
-                        changed = changed || !currPossibilities.Equals(possibilitiesBefore);
+                        // HashSet<byte> possibilitiesBefore = new HashSet<byte>(currPossibilities);
+                        int possibilitiesBefore = currPossibilities;
+                        // currPossibilities.ExceptWith(candidatesInGroup);
+                        currPossibilities = currPossibilities & (~candidatesInGroup);
+                        board[row, col].SetPossibilities(currPossibilities);
+
+                        // If removal changed something, changed is true
+                        //changed = changed || !currPossibilities.Equals(possibilitiesBefore);
+                        changed = changed || (currPossibilities != possibilitiesBefore);
 
                         SudokuConstants.inObviousTuple += changed ? 1 : 0;
                     }

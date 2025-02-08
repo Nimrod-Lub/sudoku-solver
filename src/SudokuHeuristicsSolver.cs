@@ -8,7 +8,7 @@ using src.Exceptions;
 
 namespace src
 {
-    public class SudokuHeuristicsSolver
+    public class SudokuHeuristicsSolver //TODO fix solver
     {
         public static Cell[,] Solve(Cell[,] board)
         {
@@ -45,25 +45,46 @@ namespace src
                 return board;
 
             Cell minPosibilitiesCell = board[row, col];
+            int possibilities = minPosibilitiesCell.GetPossibilities();
 
-            foreach (byte b in minPosibilitiesCell.GetPossibilities())
+            for (byte currBit = 1; possibilities != 0; currBit++, possibilities = possibilities >> 1)
             {
-                minPosibilitiesCell.SetValue(b);
-                
+                if ((possibilities & 1) == 0)
+                    continue;
+
+                //minPosibilitiesCell.SetValue(currBit);
                 Stopwatch stopwatch = new();
                 stopwatch.Start();
                 Cell[,] boardCopy = Board.CopyBoard(board);
+                boardCopy[row, col].SetValue(currBit);
                 stopwatch.Stop();
                 SudokuConstants.boardCopyTime += stopwatch.Elapsed.TotalSeconds;
-                SudokuSolverUtils.RemovePossibilities(boardCopy, b, row, col);
+                SudokuSolverUtils.RemovePossibilities(boardCopy, currBit, row, col);
                 Cell[,] result = SolveSudokuHeuristics(boardCopy);
 
                 if (result != null)
                     return result;
 
-                minPosibilitiesCell.RemovePossibility(b);
+                minPosibilitiesCell.RemovePossibility(currBit);
             }
 
+            //foreach (byte b in minPosibilitiesCell.GetPossibilities())
+            //{
+            //    minPosibilitiesCell.SetValue(b);
+
+            //    Stopwatch stopwatch = new();
+            //    stopwatch.Start();
+            //    Cell[,] boardCopy = Board.CopyBoard(board);
+            //    stopwatch.Stop();
+            //    SudokuConstants.boardCopyTime += stopwatch.Elapsed.TotalSeconds;
+            //    SudokuSolverUtils.RemovePossibilities(boardCopy, b, row, col);
+            //    Cell[,] result = SolveSudokuHeuristics(boardCopy);
+
+            //    if (result != null)
+            //        return result;
+
+            //    minPosibilitiesCell.RemovePossibility(b);
+            //}
             return null;
         }
 

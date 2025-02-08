@@ -9,21 +9,25 @@ namespace src
     public class Cell
     {
         private byte value;
-        private HashSet<byte> possibilites;
-        //private List<Tuple<byte, byte, byte>> possiblityChanges;
+        //private HashSet<byte> possibilities;
+        private int possibilities;
 
         public Cell()
         {
             value = 0;
-            possibilites = new HashSet<byte>
-                (Enumerable.Range(1, SudokuConstants.boardLength).Select(x => (byte)x));
-            // possiblityChanges = new();
+            //possibilities = new HashSet<byte>
+            //    (Enumerable.Range(1, SudokuConstants.boardLength).Select(x => (byte)x));
+
+            // the cell can hold every possible value in the beginning
+            for (int i = 0; i < SudokuConstants.boardLength; i++)
+                possibilities = possibilities | (1 << i);
         }
 
         public Cell(Cell cell)
         {
             value = cell.value;
-            possibilites = new HashSet<byte>(cell.possibilites);
+            //possibilities = new HashSet<byte>(cell.possibilities);
+            possibilities = cell.GetPossibilities();
         }
 
         public byte GetValue()
@@ -34,18 +38,29 @@ namespace src
         public void SetValue(byte value)
         {
             this.value = value;
-            //if (value != 0)
-            //    possibilites.Clear();
+            if (value != 0)
+                //possibilites.Clear();
+                possibilities = 0;
         }
-        public void RemovePossibility(byte value)
+        public void RemovePossibility(byte value) // 1,3,5,9 ->       100010101
         {
-            possibilites.Remove(value);
+            // bitwise expression - and operation with all bits set to 1 except for the bit we want to remove
+            possibilities = possibilities & (~(1 << (value - 1)));
         }
 
-        public HashSet<byte> GetPossibilities()
+        public int GetPossibilities()
         {
-            return possibilites;
+            return possibilities;
         }
 
+        public void SetPossibilities(int possibilities)
+        {
+            this.possibilities = possibilities;
+        }
+
+        public int GetPossibilitiesCount()
+        {
+            return BitwiseUtils.GetPossibilitiesCount(possibilities);
+        }
     }
 }
