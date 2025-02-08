@@ -12,6 +12,9 @@ namespace src
         public static int boardLength;
         public static readonly int MAXIMUM_GROUP_SIZE = 2;
         public static readonly string EXIT_STRING = "exit";
+        public static readonly string FILE_INPUT = "f";
+        public static readonly string CONSOLE_INPUT = "c";
+        public static readonly string OUTPUT_FILENAME = "output.txt";
         public static Dictionary<(int, int),List<List<int>>> storedCombinations = new();
         
         public static double boardCopyTime = 0;

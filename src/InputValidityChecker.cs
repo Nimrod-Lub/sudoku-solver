@@ -54,7 +54,7 @@ namespace src
             {
                 throw new InvalidInputException($"For a {boardLength}x{boardLength} board, " +
                         $"you must input values between 0 and {(char)(boardLength + '0')} in the ascii table. " +
-                    $"The char {(char)(max + '0')} is out of that range (higher than '0')");
+                    $"The char {(char)(max + '0')} is out of that range (higher than {(char)(boardLength + '0')}");
             }
 
             SudokuConstants.boardLength = (int)boardLength;

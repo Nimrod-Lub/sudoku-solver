@@ -9,7 +9,5 @@ namespace src
     public interface IOutputHandler
     {
         public abstract void Output(string str);
-
-        public abstract void OutputBoard(Cell[,] board);
     }
 }
