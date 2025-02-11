@@ -37,7 +37,7 @@ namespace src
 
             int max = 0;
 
-            foreach (char c in input) // checks if every single char in the input is valid for board size boardLength x boardLength
+            foreach (char c in input) // Checks if every single char in the input is valid for board size boardLength x boardLength
             {
                 int curr = c - '0';
                 if (curr < 0) // Current char is too low in the ascii table to be valid input
@@ -55,7 +55,7 @@ namespace src
             {
                 throw new InvalidInputException($"For a {boardLength}x{boardLength} board, " +
                         $"you must input values between 0 and {(char)(boardLength + '0')} in the ascii table. " +
-                    $"The char {(char)(max + '0')} is out of that range (higher than {(char)(boardLength + '0')}");
+                    $"The char {(char)(max + '0')} is out of that range (higher than {(char)(boardLength + '0')})");
             }
 
             SolverConstants.boardLength = (int)boardLength; // Initializes board length

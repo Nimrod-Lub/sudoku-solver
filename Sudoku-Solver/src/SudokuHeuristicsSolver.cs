@@ -33,14 +33,12 @@ namespace src
             bool updated = true;
             try
             {
-                while (updated)
+                while (updated) // Attempts to make progress using human tactics
                 {
                     while (updated)
                         updated = SudokuSolverUtils.FindNakedSingles(board);
-                    // Attempts to make progress using human tactics
+                    
                     updated = SudokuSolverUtils.FindObviousTuples(board);
-                    //updated = SudokuSolverUtils.FindObviousTuples(board);
-                    //updated = false;
                 }
             }
             catch (UnsolvableBoardException ube) // If board is unsolvable
@@ -66,13 +64,9 @@ namespace src
                 if ((possibilities & 1) == 0) // Skip if current bit is not a valid possibility
                     continue;
 
-                //minPosibilitiesCell.SetValue(currBit);
-                Stopwatch stopwatch = new();
-                stopwatch.Start();
                 Cell[,] boardCopy = Board.CopyBoard(board); // Make a deep copy of the board
                 boardCopy[row, col].SetValue(currBit); // Set the current possibility to be the value of the cell
-                stopwatch.Stop();
-                SolverConstants.boardCopyTime += stopwatch.Elapsed.TotalSeconds;
+                
                 Board.RemovePossibilities(boardCopy, currBit, row, col); // Remove possibilities from neighbors of the cell
                 Cell[,] result = SolveSudokuHeuristics(boardCopy); // Attempt to solve the current board
 
@@ -80,29 +74,8 @@ namespace src
                     return result;
 
                 minPosibilitiesCell.RemovePossibility(currBit); 
-            }
-
-            //foreach (byte b in minPosibilitiesCell.GetPossibilities())
-            //{
-            //    minPosibilitiesCell.SetValue(b);
-
-            //    Stopwatch stopwatch = new();
-            //    stopwatch.Start();
-            //    Cell[,] boardCopy = Board.CopyBoard(board);
-            //    stopwatch.Stop();
-            //    SudokuConstants.boardCopyTime += stopwatch.Elapsed.TotalSeconds;
-            //    SudokuSolverUtils.RemovePossibilities(boardCopy, b, row, col);
-            //    Cell[,] result = SolveSudokuHeuristics(boardCopy);
-
-            //    if (result != null)
-            //        return result;
-
-            //    minPosibilitiesCell.RemovePossibility(b);
-            //}
+            }           
             return null; // Board is unsolvable
         }
-
-
-
     }
 }

@@ -20,6 +20,7 @@ namespace src
             IInputHandler boardInput = null;
             IOutputHandler boardOutput = null;
             string input = null;
+            Console.WriteLine("Welcome to my sudoku!\n\n");
             
             // While user hasn't given valid input
             while (true)
@@ -43,7 +44,7 @@ namespace src
                 // User wants to input boards using files
                 else if (input.Equals(IOConstants.FILE_INPUT))
                 {
-                    // TODO get file name and not path
+                    Console.WriteLine($"The solutions of the boards in the file will be displayed at {IOConstants.OUTPUT_FILENAME}");
                     Console.WriteLine("Enter the input file path");
                     input = Console.ReadLine();
                     if (input == null)
@@ -91,20 +92,15 @@ namespace src
                     InputValidityChecker.CheckValidity(input);
                     // Build a Cell matrix using user input
                     Cell[,] board = Board.BuildBoard(input);
-                    Console.WriteLine("The inputted board is:\n\n");
+                    Console.WriteLine("\nThe inputted board is:\n\n");
                     Board.OutputBoard(board);
 
                     Stopwatch solveTimer = new Stopwatch();
                     solveTimer.Start();
+                    // Solve the board - the amount of time taken to solve is measured with the Stopwatch object
                     Cell[,] result = SudokuHeuristicsSolver.Solve(board);
                     solveTimer.Stop();
-
-                    //Console.WriteLine($"Board copy took {SudokuConstants.boardCopyTime} seconds");
-                    //Console.WriteLine($"Entered obvious tuple {SudokuConstants.inObviousTuple} times");
-                    //Console.WriteLine($"Obvious tuple took {SudokuConstants.obviousTuplesTime} seconds");
-                    //Console.WriteLine($"Naked tuple took {SudokuConstants.nakedTuplesTime} seconds");
-                    //Console.WriteLine($"Hidden tuple took {SudokuConstants.hiddenTuplesTime} seconds");
-
+                    
                     double solveLenSeconds = solveTimer.Elapsed.TotalSeconds;
                     Console.WriteLine(string.Format("\n\nTime taken to solve: {0} seconds", solveLenSeconds));
                     
@@ -112,7 +108,7 @@ namespace src
                     {
                         boardOutput.Output("The board you provided is not solvable");
                     }
-                    else
+                    else // Board was solved
                     {
                         Console.WriteLine("The solution of the board is:\n\n");
                         Board.OutputBoard(result);
@@ -121,7 +117,6 @@ namespace src
                 }
                 catch (InvalidInputException iie) // Input is invalid
                 {
-                    // Console.WriteLine(iie.Message);
                     boardOutput.Output(iie.Message);
                 }
                 catch (EndOfStreamException eose) // Reached EOF

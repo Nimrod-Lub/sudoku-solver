@@ -19,7 +19,7 @@ namespace src
                 for (int j = 0; j < boardLength; j++)
                 {
                     board[i, j] = new Cell();
-                    board[i, j].SetValue((byte)(input.ElementAt(i * boardLength + j) - '0')); // turns char into byte
+                    board[i, j].SetValue((byte)(input.ElementAt(i * boardLength + j) - '0')); // Turns char into byte
                 }
             }
             InitializePossibilities(board);
@@ -185,7 +185,7 @@ namespace src
             string result = "";
             foreach (Cell cell in board)
             {
-                result += (char)(cell.GetValue() + '0'); // converts the number (byte) to its ascii value (char)
+                result += (char)(cell.GetValue() + '0'); // Converts the number (byte) to its ascii value (char)
             }
             return result;
         }
@@ -206,7 +206,7 @@ namespace src
                 string row = "| ";
                 for (int j = 0; j < boardLength; j++) // Iterates over one row
                 {
-                    // converts from int to ascii value and displays as char e.g. converts 1 to 49/'1'
+                    // Converts from int to ascii value and displays as char e.g. converts 1 to 49/'1'
                     row += (char)(board[i, j].GetValue() + '0') + " ";
                     if ((j + 1) % blockLength == 0)
                         row += "| ";
