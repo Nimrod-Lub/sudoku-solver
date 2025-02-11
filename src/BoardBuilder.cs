@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using src.Constants;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
@@ -12,7 +13,7 @@ namespace src
     {
         public static int[,] BuildBoard(string input)
         {
-            int boardLength = SudokuConstants.boardLength;
+            int boardLength = SolverConstants.boardLength;
             int[,] sudokuBoard = new int[boardLength, boardLength];
 
             for (int i = 0; i < boardLength; i++)

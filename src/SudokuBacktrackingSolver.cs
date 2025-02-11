@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
+using src.Constants;
 
 
 namespace src
@@ -39,7 +40,7 @@ namespace src
 
         public static bool SolveSudokuBacktracking(int[,] board, int row, int col)
         {
-            int boardLength = SudokuConstants.boardLength;
+            int boardLength = SolverConstants.boardLength;
             if (row == boardLength - 1 && col == boardLength) // every tile has been checked
                 return true;
 
@@ -70,7 +71,6 @@ namespace src
             }
             return false;
         }
-
         public static bool Solve(int[,] board, int row, int col)
         {
             if (!IsSolvable(board))
@@ -114,7 +114,7 @@ namespace src
 
         public static bool HasDuplicatesInRow(int[,] sudokuBoard)
         {
-            int boardLength = SudokuConstants.boardLength;
+            int boardLength = SolverConstants.boardLength;
             int[] counterArr = new int[boardLength];
 
             for (int i = 0; i < boardLength; i++)
@@ -137,7 +137,7 @@ namespace src
 
         public static bool HasDuplicatesInColumn(int[,] sudokuBoard)
         {
-            int boardLength = SudokuConstants.boardLength;
+            int boardLength = SolverConstants.boardLength;
             int[] counterArr = new int[boardLength];
 
             for (int i = 0; i < boardLength; i++)
@@ -160,8 +160,8 @@ namespace src
 
         public static bool HasDuplicatesInBlock(int[,] sudokuBoard)
         {
-            int boardLength = SudokuConstants.boardLength;
-            int blockLength = SudokuConstants.blockLength;
+            int boardLength = SolverConstants.boardLength;
+            int blockLength = SolverConstants.blockLength;
             int[] counterArr = new int[boardLength];
 
             // Assuming block length = num of blocks in each row/column
