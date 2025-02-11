@@ -105,9 +105,9 @@ namespace src
                     //Console.WriteLine($"Naked tuple took {SudokuConstants.nakedTuplesTime} seconds");
                     //Console.WriteLine($"Hidden tuple took {SudokuConstants.hiddenTuplesTime} seconds");
 
-                    long solveLenMillis = solveTimer.ElapsedMilliseconds;
-                    Console.WriteLine(string.Format("\n\nTime taken to solve: {0} milliseconds", solveLenMillis));
-
+                    double solveLenSeconds = solveTimer.Elapsed.TotalSeconds;
+                    Console.WriteLine(string.Format("\n\nTime taken to solve: {0} seconds", solveLenSeconds));
+                    
                     if (result == null) // If the board is unsolvable
                     {
                         boardOutput.Output("The board you provided is not solvable");
