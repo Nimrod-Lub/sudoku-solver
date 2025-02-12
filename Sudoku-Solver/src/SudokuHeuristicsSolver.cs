@@ -31,15 +31,14 @@ namespace src
         private static Cell[,] SolveSudokuHeuristics(Cell[,] board)
         {
             bool updated = true;
-            try
+            try // Attempts to make progress using human tactics
             {
-                while (updated) // Attempts to make progress using human tactics
-                {
-                    while (updated)
-                        updated = SudokuSolverUtils.FindNakedSingles(board);
+                while (updated) // Applies naked singles until no changes are made
+                    updated = SudokuSolverUtils.FindNakedSingles(board);
                     
-                    updated = SudokuSolverUtils.FindObviousTuples(board);
-                }
+                // Applies obvious tuples - the function takes a lot of time
+                // so it's best to only use it once per iteration
+                SudokuSolverUtils.FindObviousTuples(board);
             }
             catch (UnsolvableBoardException ube) // If board is unsolvable
             {

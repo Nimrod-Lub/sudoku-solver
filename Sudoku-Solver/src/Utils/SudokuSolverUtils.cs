@@ -39,14 +39,13 @@ namespace src.utils
 
         // Attempts to find obvious tuples on the board
         // Obvious tuple - a "tuple" (group) of cells that are naked tuples or hidden tuples
-        public static bool FindObviousTuples(Cell[,] board)
+        public static void FindObviousTuples(Cell[,] board)
         {
             int boardLength = SolverConstants.boardLength;
             int blockLength = SolverConstants.blockLength;
             List<(int, int)> currentCheckedGroupRows = new List<(int, int)>();
             List<(int, int)> currentCheckedGroupCols = new List<(int, int)>();
             List<(int, int)> currentCheckedGroupBlocks = new List<(int, int)>();
-            bool changed = false;
 
             // Makes a list of all cells in each row and column that don't have a set value
             for (int row = 0; row < boardLength; row++) 
@@ -68,11 +67,11 @@ namespace src.utils
                     }
                 }
                 // If the group size is larger than the max combination size
-                if (currentCheckedGroupRows.Count > SolverConstants.MAXIMUM_COMBINATION_SIZE) 
-                    changed = changed || FindObviousTuplesGroup(board, currentCheckedGroupRows); // Applies obvious tuples on each group
+                if (currentCheckedGroupRows.Count > SolverConstants.MAXIMUM_COMBINATION_SIZE)
+                    FindObviousTuplesGroup(board, currentCheckedGroupRows); // Applies obvious tuples on each group
                 // If the group size is larger than the max combination size
                 if (currentCheckedGroupCols.Count > SolverConstants.MAXIMUM_COMBINATION_SIZE) 
-                    changed = changed || FindObviousTuplesGroup(board, currentCheckedGroupCols); // Applies obvious tuples on each group
+                    FindObviousTuplesGroup(board, currentCheckedGroupCols); // Applies obvious tuples on each group
             }
 
             // Makes a list of all cells in each block that don't have a set value
@@ -99,17 +98,14 @@ namespace src.utils
                     }
                     // If the group size is larger than the max combination size
                     if (currentCheckedGroupBlocks.Count > SolverConstants.MAXIMUM_COMBINATION_SIZE) 
-                        changed = changed || FindObviousTuplesGroup(board, currentCheckedGroupBlocks); // Applies obvious tuples on each group
+                        FindObviousTuplesGroup(board, currentCheckedGroupBlocks); // Applies obvious tuples on each group
                 }
             }
-            return false;
         }
 
         // Attempts to find obvious tuples in a given group
-        public static bool FindObviousTuplesGroup(Cell[,] board, List<(int, int)> group)
+        public static void FindObviousTuplesGroup(Cell[,] board, List<(int, int)> group)
         {
-            bool changed = false;
-
             // Finds naked tuples of size combinationSize
             for (int combinationSize = 2
                 ; combinationSize <= Math.Min(group.Count, SolverConstants.MAXIMUM_COMBINATION_SIZE)
@@ -145,12 +141,13 @@ namespace src.utils
                     }
 
                     // Apply naked tuples in current group with current combination
-                    changed = changed || FindNakedTuples(board, group, combinationCells);
+                    FindNakedTuples(board, group, combinationCells);
                 }
             }
 
             // Finds hidden tuples of size numExcludeFromGroup
-            // Naked tuples of the entire group except for x cells is similar to hidden tuples for x cells
+            // Naked tuples of the entire group except for numExcludeFromGroup cells
+            // is similar to hidden tuples for numExcludeFromGroup cells
             for (int numExcludeFromGroup = 1
                ; numExcludeFromGroup <= Math.Min(group.Count / 2, SolverConstants.MAXIMUM_COMBINATION_SIZE)
                ; numExcludeFromGroup++)
@@ -183,10 +180,9 @@ namespace src.utils
                     }
                     // Apply naked tuples in current group with current combination:
                     // Similar to hidden tuples in current group with all cells not in combinationCells being the combination
-                    changed = changed || FindNakedTuples(board, group, combinationCells);
+                    FindNakedTuples(board, group, combinationCells);
                 }
             }
-            return changed;
         }
 
 
@@ -251,10 +247,9 @@ namespace src.utils
         }
 
         // Applies naked tuples to the group group with the current combination
-        public static bool FindNakedTuples(Cell[,] board
+        public static void FindNakedTuples(Cell[,] board
             , List<(int, int)> group, List<(int, int)> combination)
         {
-            bool changed = false;
             int candidatesInGroup = 0;
 
             // Adds all possibilities of all cells in the combination to one place
@@ -280,18 +275,13 @@ namespace src.utils
                     {
                         int currPossibilities = board[row, col].GetPossibilities();
 
-                        int possibilitiesBefore = currPossibilities;
                         // Bitwise expression - Set every bit that isn't a possibility of the combination to 1
                         // and perform the "and" operation with the cell's current possibilities
                         currPossibilities = currPossibilities & ~candidatesInGroup;
                         board[row, col].SetPossibilities(currPossibilities);
-
-                        // If removal changed something, changed is true
-                        changed = changed || currPossibilities != possibilitiesBefore;
                     }
                 }
             }
-            return false;
         }
     }
 }
