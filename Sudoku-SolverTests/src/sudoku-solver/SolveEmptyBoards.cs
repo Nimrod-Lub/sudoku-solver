@@ -15,8 +15,8 @@ namespace src.Tests
         public void EmptyBoardLength1()
         {
             string boardString = "0";
-            SolverConstants.boardLength = 1;
-            SolverConstants.blockLength = 1;
+            SolverConstants.boardLength = (int)(Math.Sqrt(boardString.Length));
+            SolverConstants.blockLength = (int)(Math.Sqrt(SolverConstants.boardLength));
 
             Cell[,] board = Board.BuildBoard(boardString);
             Cell[,] result = SudokuHeuristicsSolver.Solve(board);
@@ -27,8 +27,8 @@ namespace src.Tests
         public void EmptyBoardLength4()
         {
             string boardString = "0000000000000000";
-            SolverConstants.boardLength = 4;
-            SolverConstants.blockLength = 2;
+            SolverConstants.boardLength = (int)(Math.Sqrt(boardString.Length));
+            SolverConstants.blockLength = (int)(Math.Sqrt(SolverConstants.boardLength));
 
             Cell[,] board = Board.BuildBoard(boardString);
             Cell[,] result = SudokuHeuristicsSolver.Solve(board);
@@ -39,8 +39,8 @@ namespace src.Tests
         public void EmptyBoardLength9()
         {
             string boardString = "000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-            SolverConstants.boardLength = 9;
-            SolverConstants.blockLength = 3;
+            SolverConstants.boardLength = (int)(Math.Sqrt(boardString.Length));
+            SolverConstants.blockLength = (int)(Math.Sqrt(SolverConstants.boardLength));
 
             Cell[,] board = Board.BuildBoard(boardString);
             Cell[,] result = SudokuHeuristicsSolver.Solve(board);
@@ -51,8 +51,8 @@ namespace src.Tests
         public void EmptyBoardLength16()
         {
             string boardString = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-            SolverConstants.boardLength = 16;
-            SolverConstants.blockLength = 4;
+            SolverConstants.boardLength = (int)(Math.Sqrt(boardString.Length));
+            SolverConstants.blockLength = (int)(Math.Sqrt(SolverConstants.boardLength));
 
             Cell[,] board = Board.BuildBoard(boardString);
             Cell[,] result = SudokuHeuristicsSolver.Solve(board);
@@ -63,8 +63,8 @@ namespace src.Tests
         public void EmptyBoardLength25()
         {
             string boardString = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-            SolverConstants.boardLength = 25;
-            SolverConstants.blockLength = 5;
+            SolverConstants.boardLength = (int)(Math.Sqrt(boardString.Length));
+            SolverConstants.blockLength = (int)(Math.Sqrt(SolverConstants.boardLength));
 
             Cell[,] board = Board.BuildBoard(boardString);
             Cell[,] result = SudokuHeuristicsSolver.Solve(board);
