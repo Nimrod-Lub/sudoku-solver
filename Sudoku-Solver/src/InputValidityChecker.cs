@@ -49,7 +49,6 @@ namespace src
                 if (curr > max)
                     max = curr;
             }
-            
 
             if (max > boardLength) // There is a char whose value in the ascii table is too high to be valid input
             {
@@ -58,9 +57,14 @@ namespace src
                     $"The char {(char)(max + '0')} is out of that range (higher than {(char)(boardLength + '0')})");
             }
 
+            if (boardLength > IOConstants.MAX_BOARD_LENGTH)
+            {
+                throw new InvalidInputException($"My sudoku solver does not solve {boardLength}x{boardLength} boards, " +
+                    $"the maximum size is {IOConstants.MAX_BOARD_LENGTH}x{IOConstants.MAX_BOARD_LENGTH} boards");
+            }
+
             SolverConstants.boardLength = (int)boardLength; // Initializes board length
             SolverConstants.blockLength = (int)blockLength; // Initializes block Length
-
         }
     }
 }
